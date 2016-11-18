@@ -47,9 +47,9 @@ func main() {
 			for gistFilename := range gists[i].Files {
 				filesName = append(filesName, string(gistFilename))
 			}
-			fmt.Printf("%s - %s - %t \n", indexToString, filesName[0], *gists[i].Public)
+			fmt.Printf("%s - %s \n", indexToString, filesName[0])
 		} else {
-			fmt.Printf("%s - %v - %t \n", indexToString, *gists[i].Description, *gists[i].Public)
+			fmt.Printf("%s - %v \n", indexToString, *gists[i].Description)
 		}
 
 		gistsUrls[indexToString] = *gists[i].HTMLURL
