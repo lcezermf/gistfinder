@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -14,14 +15,24 @@ import (
 
 var GetGistsError = errors.New("Cannot get user gists")
 var UnsupportedPlatform = errors.New("Unsupported platform")
+var showPrivateGists *bool
+
+func init() {
+	showPrivateGists = flag.Bool("p", true, "Use false value to do not list private gists.")
+
+	flag.Parse()
+}
 
 func main() {
 	client := getClient()
-
 	gists, _, err := client.Gists.List("", nil)
 
 	if err != nil {
 		panic(GetGistsError)
+	}
+
+	if !*showPrivateGists {
+		gists = removePrivateGists(gists)
 	}
 
 	fmt.Print("\nYou Gists: \n\n")
@@ -36,9 +47,9 @@ func main() {
 			for gistFilename := range gists[i].Files {
 				filesName = append(filesName, string(gistFilename))
 			}
-			fmt.Printf("%s - %s \n", indexToString, filesName[0])
+			fmt.Printf("%s - %s - %t \n", indexToString, filesName[0], *gists[i].Public)
 		} else {
-			fmt.Printf("%s - %v \n", indexToString, *gists[i].Description)
+			fmt.Printf("%s - %v - %t \n", indexToString, *gists[i].Description, *gists[i].Public)
 		}
 
 		gistsUrls[indexToString] = *gists[i].HTMLURL
@@ -53,6 +64,18 @@ func main() {
 	} else {
 		fmt.Print("\nGist not found\n")
 	}
+}
+
+func removePrivateGists(gists []*github.Gist) []*github.Gist {
+	var publicGists []*github.Gist
+
+	for i := 0; i < len(gists); i++ {
+		if *gists[i].Public {
+			publicGists = append(publicGists, gists[i])
+		}
+	}
+
+	return publicGists
 }
 
 func openBrowser(gistUrl string) {

@@ -16,10 +16,27 @@ go get "github.com/lccezinha/gistfinder"
 export GITHUB_TOKEN=YOUR_AWESOME_TOKEN
 
 source ~/.YOUR_DOT_FILE
-``` 
+```
 
 ### How to use
 
 After install script, just run the command `gistfinder` in your terminal and then select the number of Gist file you wanna open in browser:
+
+#### Options
+
+You can use options when run the `gistfinder` command with options, for now only `-p` option is available:
+
+```
+gistfinder -p=false
+```
+
+More informations about options:
+
+```
+gistfinder -h
+
+Usage of gistfinder:
+  -p	Use false value to do not list private gists. (default true)
+```
 
 ![gistfinder](http://i.imgur.com/5MRD31N.png)
