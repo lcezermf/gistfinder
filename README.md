@@ -24,7 +24,7 @@ After install script, just run the command `gistfinder` in your terminal and the
 
 #### Options
 
-You can use options when run the `gistfinder` command with options, for now only `-p` option is available:
+You can use options when run the `gistfinder` command, for now only `-p` option is available:
 
 ```
 gistfinder -p=false

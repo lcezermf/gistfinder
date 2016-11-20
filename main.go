@@ -31,16 +31,16 @@ func main() {
 		panic(GetGistsError)
 	}
 
-	if !*showPrivateGists {
-		gists = removePrivateGists(gists)
-	}
-
 	fmt.Print("\nYou Gists: \n\n")
 
 	gistsUrls := make(map[string]string)
 
 	for i := 0; i < len(gists); i++ {
 		indexToString := strconv.Itoa(i)
+
+		if !*showPrivateGists && !*gists[i].Public {
+			continue
+		}
 
 		if gists[i].Description == nil || *gists[i].Description == "" {
 			var filesName []string
@@ -66,18 +66,6 @@ func main() {
 	}
 }
 
-func removePrivateGists(gists []*github.Gist) []*github.Gist {
-	var publicGists []*github.Gist
-
-	for i := 0; i < len(gists); i++ {
-		if *gists[i].Public {
-			publicGists = append(publicGists, gists[i])
-		}
-	}
-
-	return publicGists
-}
-
 func openBrowser(gistUrl string) {
 	var err error
 
@@ -93,7 +81,7 @@ func openBrowser(gistUrl string) {
 	}
 
 	if err != nil {
-		fmt.Print(err)
+		panic(err)
 	}
 }
 
