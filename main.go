@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -16,6 +17,7 @@ import (
 var GetGistsError = errors.New("Cannot get user gists")
 var UnsupportedPlatform = errors.New("Unsupported platform")
 var showPrivateGists *bool
+var ctx context.Context
 
 func init() {
 	showPrivateGists = flag.Bool("p", true, "Use false value to do not list private gists.")
@@ -25,7 +27,7 @@ func init() {
 
 func main() {
 	client := getClient()
-	gists, _, err := client.Gists.List("", nil)
+	gists, _, err := client.Gists.List(ctx, "", nil)
 
 	if err != nil {
 		panic(GetGistsError)
@@ -86,10 +88,11 @@ func openBrowser(gistUrl string) {
 }
 
 func getClient() *github.Client {
+	ctx = context.Background()
 	tokenSource := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
 	)
-	tokenClient := oauth2.NewClient(oauth2.NoContext, tokenSource)
+	tokenClient := oauth2.NewClient(ctx, tokenSource)
 
 	return github.NewClient(tokenClient)
 }
